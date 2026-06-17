@@ -18,7 +18,7 @@ public class TransactionApiClient {
 
     public TransactionApiClient(WebClient.Builder builder) {
         this.webClient = builder
-                .baseUrl("http://localhost:8081") // API 2
+                .baseUrl("http://transaction-api:8081") // API 2
                 .build();
     }
 

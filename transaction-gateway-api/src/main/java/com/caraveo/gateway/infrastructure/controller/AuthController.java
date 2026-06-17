@@ -8,7 +8,7 @@ import com.caraveo.gateway.application.dto.LoginResponse;
 import com.caraveo.gateway.application.usecase.LoginUseCase;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/gateway/auth")
 public class AuthController {
 
     private final LoginUseCase loginUseCase;
