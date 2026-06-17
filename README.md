@@ -103,7 +103,7 @@ docker compose up --build
 ---
 
 ## Accesos
-- Servicio	URL
+Servicio	URL
 - Frontend	http://localhost:3000
 - Gateway API	http://localhost:8082
 - Transaction API	http://localhost:8081
