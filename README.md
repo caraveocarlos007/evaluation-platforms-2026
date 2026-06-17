@@ -71,15 +71,15 @@ Antes de levantar Docker, genera los JARs:
 ```bash
 cd transaction-api
 mvn clean package -DskipTests
+```
 
-## Compilación previa (OBLIGATORIO)
-
-Antes de levantar Docker, compila los microservicios:
+---
 
 ### Gateway API
 ```bash
 cd transaction-gateway-api
 mvn clean package -DskipTests
+```
 
 ---
 
@@ -88,6 +88,7 @@ mvn clean package -DskipTests
 cd frontend-react
 npm install
 npm run build
+```
 
 ---
 
@@ -97,6 +98,7 @@ Desde la raíz del proyecto:
 
 ```bash
 docker compose up --build
+```
 
 ---
 
@@ -112,7 +114,7 @@ Swagger Transaction	http://localhost:8081/swagger-ui/index.html
 
 ## Credenciales de prueba
 Usuario: admin
-Password: (ver logs o seed inicial del sistema)
+Password: 1234
 
 ---
 
