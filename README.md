@@ -68,6 +68,9 @@ Incluye:
 Antes de levantar Docker, genera los JARs:
 
 ### Transaction API
+
+Desde la raíz del proyecto:
+
 ```bash
 cd transaction-api
 mvn clean package -DskipTests
@@ -76,6 +79,9 @@ mvn clean package -DskipTests
 ---
 
 ### Gateway API
+
+Desde la raíz del proyecto:
+
 ```bash
 cd transaction-gateway-api
 mvn clean package -DskipTests
@@ -84,6 +90,9 @@ mvn clean package -DskipTests
 ---
 
 ### Frontend
+
+Desde la raíz del proyecto:
+
 ```bash
 cd frontend-react
 npm install
