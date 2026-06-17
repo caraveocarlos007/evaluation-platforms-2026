@@ -103,18 +103,18 @@ docker compose up --build
 ---
 
 ## Accesos
-Servicio	URL
-Frontend	http://localhost:3000
-Gateway API	http://localhost:8082
-Transaction API	http://localhost:8081
-Swagger Gateway	http://localhost:8082/swagger-ui/index.html
-Swagger Transaction	http://localhost:8081/swagger-ui/index.html
+- Servicio	URL
+- Frontend	http://localhost:3000
+- Gateway API	http://localhost:8082
+- Transaction API	http://localhost:8081
+- Swagger Gateway	http://localhost:8082/swagger-ui/index.html
+- Swagger Transaction	http://localhost:8081/swagger-ui/index.html
 
 ---
 
 ## Credenciales de prueba
-Usuario: admin
-Password: 1234
+- Usuario: admin
+- Password: 1234
 
 ---
 
