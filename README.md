@@ -81,6 +81,8 @@ Antes de levantar Docker, compila los microservicios:
 cd transaction-gateway-api
 mvn clean package -DskipTests
 
+---
+
 ### Frontend
 ```bash
 cd frontend-react
