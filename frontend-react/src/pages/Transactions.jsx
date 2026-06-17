@@ -25,6 +25,7 @@ export default function Transactions() {
 
   const fetchData = async () => {
     setLoading(true);
+
     try {
       const res = await getTransactions(0, 20, "id");
 
@@ -65,14 +66,45 @@ export default function Transactions() {
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 80 },
-    { field: "operacion", headerName: "Operación", flex: 1 },
-    { field: "importe", headerName: "Importe", flex: 1 },
-    { field: "cliente", headerName: "Cliente", flex: 1 },
+    {
+      field: "id",
+      headerName: "ID",
+      width: 80,
+    },
+
+    {
+      field: "operacion",
+      headerName: "Operación",
+      flex: 1,
+    },
+
+    {
+      field: "importe",
+      headerName: "Importe",
+      flex: 1,
+      renderCell: (params) =>
+        `$${Number(params.value).toFixed(2)}`,
+    },
+
+    {
+      field: "cliente",
+      headerName: "Cliente",
+      flex: 1,
+    },
+
+    {
+      field: "referencia",
+      headerName: "Referencia",
+      flex: 1,
+    },
+
     {
       field: "estatus",
       headerName: "Status",
       flex: 1,
+      align: "center",
+      headerAlign: "center",
+
       renderCell: (params) => {
         const value = params.value?.toLowerCase();
 
@@ -81,29 +113,44 @@ export default function Transactions() {
             style={{
               padding: "4px 10px",
               borderRadius: 10,
-              background: value === "cancelado" ? "#ff5252" : "#4caf50",
+              background:
+                value === "cancelado"
+                  ? "#ff5252"
+                  : "#4caf50",
               color: "white",
               fontWeight: "bold",
               fontSize: 12,
             }}
           >
-            {value === "cancelado" ? "Cancelado" : "Aprobada"}
+            {value === "cancelado"
+              ? "Cancelado"
+              : "Aprobada"}
           </span>
         );
       },
     },
+
     {
       field: "actions",
       headerName: "Acciones",
-      width: 160,
+      width: 180,
       sortable: false,
       filterable: false,
+      align: "center",
+      headerAlign: "center",
+
       renderCell: (params) => {
-        const estatus = params.row.estatus?.toLowerCase();
+        const estatus =
+          params.row.estatus?.toLowerCase();
 
         if (estatus === "cancelado") {
           return (
-            <span style={{ fontSize: 12, color: "#999" }}>
+            <span
+              style={{
+                fontSize: 12,
+                color: "#999",
+              }}
+            >
               Sin acciones
             </span>
           );
@@ -114,7 +161,9 @@ export default function Transactions() {
             size="small"
             variant="contained"
             color="error"
-            onClick={() => handleCancel(params.row)}
+            onClick={() =>
+              handleCancel(params.row)
+            }
             sx={{
               textTransform: "none",
               borderRadius: 2,
@@ -132,7 +181,8 @@ export default function Transactions() {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
+        background:
+          "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
         padding: 3,
       }}
     >
@@ -143,7 +193,6 @@ export default function Transactions() {
           padding: 3,
         }}
       >
-        {/* HEADER */}
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -151,65 +200,92 @@ export default function Transactions() {
           mb={2}
         >
           <Box>
-            <Typography variant="h5" fontWeight="bold" color="primary">
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              color="primary"
+            >
               Transacciones
             </Typography>
 
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              variant="body2"
+              color="text.secondary"
+            >
               Gestión de operaciones del sistema
             </Typography>
           </Box>
 
           <Button
             variant="outlined"
-            onClick={() => navigate("/dashboard")}
+            onClick={() =>
+              navigate("/dashboard")
+            }
           >
             ⬅ Volver al dashboard
           </Button>
         </Stack>
 
-        {/* TABLE (FIX REAL) */}
-        <div style={{ height: 550, width: "100%" }}>
+        <div
+          style={{
+            height: 550,
+            width: "100%",
+          }}
+        >
           <DataGrid
             rows={rows}
             columns={columns}
             loading={loading}
             disableRowSelectionOnClick
-            autoHeight={false}
-            density="standard"
-            columnHeaderHeight={45}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
             sx={{
               border: "none",
 
-              // 🔥 ESTO ES LO QUE TE ESTABA ROMPIENDO LOS HEADERS
-              "& .MuiDataGrid-columnHeaders": {
-                backgroundColor: "#1e3c72",
-                color: "#fff",
-                fontWeight: "bold",
+              "& .MuiDataGrid-columnHeader": {
+                backgroundColor: "#f5f5f5",
               },
 
               "& .MuiDataGrid-columnHeaderTitle": {
-                color: "#fff",
-                fontWeight: "bold",
+                color: "#1e3c72 !important",
+                fontWeight: 700,
+                fontSize: "14px",
+              },
+
+              "& .MuiDataGrid-columnSeparator": {
+                color: "#ccc",
               },
 
               "& .MuiDataGrid-row:hover": {
-                backgroundColor: "rgba(30, 60, 114, 0.12)",
+                backgroundColor:
+                  "rgba(30, 60, 114, 0.12)",
               },
             }}
           />
         </div>
       </Paper>
 
-      {/* SNACKBAR */}
       <Snackbar
         open={open}
         autoHideDuration={3000}
         onClose={() => setOpen(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
       >
         <Alert
-          severity={message.includes("Error") ? "error" : "success"}
+          severity={
+            message.includes("Error")
+              ? "error"
+              : "success"
+          }
           variant="filled"
         >
           {message}

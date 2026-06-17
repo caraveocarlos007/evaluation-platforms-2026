@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createTransaction } from "../api/transactionApi";
+import CryptoJS from "crypto-js";
+
 import {
   Box,
   Paper,
@@ -15,6 +17,8 @@ import {
   DialogActions,
   Alert,
 } from "@mui/material";
+
+const AES_KEY = "key123";
 
 export default function CreateTransaction() {
   const navigate = useNavigate();
@@ -31,17 +35,44 @@ export default function CreateTransaction() {
   const [result, setResult] = useState(null);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
   };
 
   const handleSubmit = async () => {
     setLoading(true);
 
     try {
-      const res = await createTransaction(form);
+      const key = CryptoJS.enc.Utf8.parse("1234567890123456");
 
-      setResult(res.data); // guardamos respuesta
-      setOpen(true); // abrimos modal
+      const encrypted = CryptoJS.AES.encrypt(
+        form.secreto,
+        key,
+        {
+          mode: CryptoJS.mode.ECB,
+          padding: CryptoJS.pad.Pkcs7,
+        }
+      );
+
+      const encryptedSecret = encrypted.toString();
+
+      console.log("====================================");
+      console.log("SECRETO ORIGINAL:", form.secreto);
+      console.log("SECRETO CIFRADO:", encryptedSecret);
+      console.log("====================================");
+
+      const payload = {
+        ...form,
+        secreto: encryptedSecret,
+      };
+
+      const res = await createTransaction(payload);
+
+      setResult(res.data);
+
+      setOpen(true);
 
       setForm({
         operacion: "",
@@ -49,6 +80,7 @@ export default function CreateTransaction() {
         cliente: "",
         secreto: "",
       });
+
     } catch (err) {
       console.error(err);
       alert("Error creando transacción");
@@ -75,7 +107,8 @@ export default function CreateTransaction() {
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          background: "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
+          background:
+            "linear-gradient(135deg, #0f2027, #203a43, #2c5364)",
           padding: 2,
         }}
       >
@@ -88,11 +121,19 @@ export default function CreateTransaction() {
             textAlign: "center",
           }}
         >
-          <Typography variant="h5" fontWeight="bold" color="primary">
+          <Typography
+            variant="h5"
+            fontWeight="bold"
+            color="primary"
+          >
             Crear Transacción
           </Typography>
 
-          <Typography variant="body2" sx={{ mb: 3 }} color="text.secondary">
+          <Typography
+            variant="body2"
+            sx={{ mb: 3 }}
+            color="text.secondary"
+          >
             Registra una nueva operación
           </Typography>
 
@@ -134,16 +175,12 @@ export default function CreateTransaction() {
               variant="contained"
               onClick={handleSubmit}
               disabled={loading}
-              sx={{
-                background: "linear-gradient(135deg, #1e3c72, #2a5298)",
-                borderRadius: 2,
-                py: 1.2,
-                textTransform: "none",
-                fontWeight: "bold",
-              }}
             >
               {loading ? (
-                <CircularProgress size={22} color="inherit" />
+                <CircularProgress
+                  size={22}
+                  color="inherit"
+                />
               ) : (
                 "Crear transacción"
               )}
@@ -152,26 +189,35 @@ export default function CreateTransaction() {
         </Paper>
       </Box>
 
-      {/* MODAL PRO DE ÉXITO */}
-      <Dialog open={open} onClose={handleNew} fullWidth maxWidth="xs">
-        <DialogTitle>✅ Transacción creada</DialogTitle>
+      <Dialog
+        open={open}
+        onClose={handleNew}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle>
+          Transacción creada
+        </DialogTitle>
 
         <DialogContent>
           {result && (
             <Stack spacing={1} mt={1}>
-              <Alert severity="success" variant="filled">
+              <Alert
+                severity="success"
+                variant="filled"
+              >
                 Operación registrada correctamente
               </Alert>
 
-              <Typography fontSize={14}>
+              <Typography>
                 <b>ID:</b> {result.id}
               </Typography>
 
-              <Typography fontSize={14}>
+              <Typography>
                 <b>Referencia:</b> {result.referencia}
               </Typography>
 
-              <Typography fontSize={14}>
+              <Typography>
                 <b>Estatus:</b> {result.estatus}
               </Typography>
             </Stack>
@@ -179,16 +225,16 @@ export default function CreateTransaction() {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={handleNew} variant="outlined">
+          <Button
+            onClick={handleNew}
+            variant="outlined"
+          >
             Crear otra
           </Button>
 
           <Button
             onClick={handleGoDashboard}
             variant="contained"
-            sx={{
-              background: "linear-gradient(135deg, #1e3c72, #2a5298)",
-            }}
           >
             Ir al dashboard
           </Button>

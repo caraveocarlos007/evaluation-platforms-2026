@@ -4,9 +4,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.caraveo.gateway.application.dto.CreateTransactionRequest;
+import com.caraveo.gateway.application.dto.LoginApiResponse;
+import com.caraveo.gateway.application.dto.LoginRequest;
+import com.caraveo.gateway.application.dto.LoginResponse;
+import com.caraveo.gateway.application.dto.PageResponse;
 import com.caraveo.gateway.application.dto.TransactionResponse;
 import com.caraveo.gateway.application.dto.UpdateTransactionStatusRequest;
-import com.caraveo.gateway.application.dto.PageResponse;
 
 @Component
 public class TransactionApiClient {
@@ -53,6 +56,16 @@ public class TransactionApiClient {
                         .build())
                 .retrieve()
                 .bodyToMono(PageResponse.class)
+                .block();
+    }
+    
+    // LOGGIN
+    public LoginApiResponse login(LoginRequest request) {
+        return webClient.post()
+                .uri("/auth/login")
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(LoginApiResponse.class)
                 .block();
     }
 }
