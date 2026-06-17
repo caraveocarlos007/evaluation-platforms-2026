@@ -2,7 +2,7 @@ FROM eclipse-temurin:21-jdk
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY target/transaction-api.jar app.jar
 
 EXPOSE 8081
 
