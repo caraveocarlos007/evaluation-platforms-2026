@@ -31,7 +31,7 @@ export default function Login() {
       const token = res.data.token;
 
       if (!token) {
-        setError("No token recibido");
+        setError("Credenciales inválidas. Favor de validar el usuario y la contraseña.");
         return;
       }
 
