@@ -18,8 +18,6 @@ import {
   Alert,
 } from "@mui/material";
 
-const AES_KEY = "key123";
-
 export default function CreateTransaction() {
   const navigate = useNavigate();
 
@@ -30,22 +28,86 @@ export default function CreateTransaction() {
     secreto: "",
   });
 
+  const [errors, setErrors] = useState({});
+
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState(null);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setForm({
       ...form,
-      [e.target.name]: e.target.value,
+      [name]: value,
+    });
+
+    setErrors({
+      ...errors,
+      [name]: "",
     });
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Operación
+    if (!form.operacion.trim()) {
+      newErrors.operacion = "La operación es obligatoria";
+    } else if (
+      !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.operacion)
+    ) {
+      newErrors.operacion =
+        "La operación solo debe contener letras";
+    }
+
+    // Importe
+    if (!form.importe.trim()) {
+      newErrors.importe = "El importe es obligatorio";
+    } else if (
+      !/^\d+(\.\d{1,2})?$/.test(form.importe)
+    ) {
+      newErrors.importe =
+        "Debe capturar un importe válido";
+    } else if (parseFloat(form.importe) <= 0) {
+      newErrors.importe =
+        "El importe debe ser mayor a cero";
+    }
+
+    // Cliente
+    if (!form.cliente.trim()) {
+      newErrors.cliente = "El cliente es obligatorio";
+    } else if (
+      !/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$/.test(form.cliente)
+    ) {
+      newErrors.cliente =
+        "El cliente solo debe contener letras";
+    } else if (form.cliente.length > 50) {
+      newErrors.cliente =
+        "El cliente no puede exceder 50 caracteres";
+    }
+
+    // Secreto
+    if (!form.secreto.trim()) {
+      newErrors.secreto = "El secreto es obligatorio";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     setLoading(true);
 
     try {
-      const key = CryptoJS.enc.Utf8.parse("1234567890123456");
+      const key = CryptoJS.enc.Utf8.parse(
+        "1234567890123456"
+      );
 
       const encrypted = CryptoJS.AES.encrypt(
         form.secreto,
@@ -81,6 +143,7 @@ export default function CreateTransaction() {
         secreto: "",
       });
 
+      setErrors({});
     } catch (err) {
       console.error(err);
       alert("Error creando transacción");
@@ -144,6 +207,8 @@ export default function CreateTransaction() {
               value={form.operacion}
               onChange={handleChange}
               fullWidth
+              error={!!errors.operacion}
+              helperText={errors.operacion}
             />
 
             <TextField
@@ -152,6 +217,9 @@ export default function CreateTransaction() {
               value={form.importe}
               onChange={handleChange}
               fullWidth
+              error={!!errors.importe}
+              helperText={errors.importe}
+              placeholder="0.00"
             />
 
             <TextField
@@ -160,6 +228,14 @@ export default function CreateTransaction() {
               value={form.cliente}
               onChange={handleChange}
               fullWidth
+              inputProps={{
+                maxLength: 50,
+              }}
+              error={!!errors.cliente}
+              helperText={
+                errors.cliente ||
+                `${form.cliente.length}/50 caracteres`
+              }
             />
 
             <TextField
@@ -169,6 +245,8 @@ export default function CreateTransaction() {
               onChange={handleChange}
               fullWidth
               type="password"
+              error={!!errors.secreto}
+              helperText={errors.secreto}
             />
 
             <Button
